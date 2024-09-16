@@ -374,7 +374,7 @@ def main(args, shuffle_data=True, model=None):
 
     data = load_file(args.dataset_filename)
 
-    print(len(data))
+    print(f"len data is {len(data)}")
 
     if args.lowercase:
         # lowercase all samples
@@ -398,7 +398,7 @@ def main(args, shuffle_data=True, model=None):
 
     logger.info("\n" + ret_msg + "\n")
 
-    print(len(all_samples))
+    print(f"len all_samples is {len(all_samples)}")
 
     # if template is active (1) use a single example for (sub,obj) and (2) ...
     if args.template and args.template != "":
