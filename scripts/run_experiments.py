@@ -94,7 +94,7 @@ def run_experiments(
             "dataset_filename": "{}{}{}".format(
                 data_path_pre, relation["relation"], data_path_post
             ),
-            "common_vocab_filename": "pre-trained_language_models/common_vocab_cased.txt",
+            "common_vocab_filename": "pre-trained_language_models/common_vocab_lowercased.txt",
             "template": "",
             "bert_vocab_name": "vocab.txt",
             "batch_size": 32,
