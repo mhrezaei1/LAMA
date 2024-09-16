@@ -68,19 +68,19 @@ LOWERCASED_MODELS = [
    "bert_model_dir": None,
    "bert_vocab_name": "vocab.txt"
  },
- {
-   # "BERT LARGE UNCASED"
-   "lm": "bert",
-   "bert_model_name": "bert-large-uncased",
-   "bert_model_dir": None,
-   "bert_vocab_name": "vocab.txt"
- },
- {
-   # "OpenAI GPT"
-   "lm": "gpt",
-   "gpt_model_dir": None,
-   "gpt_model_name": "openai-gpt"
- }
+#  {
+#    # "BERT LARGE UNCASED"
+#    "lm": "bert",
+#    "bert_model_name": "bert-large-uncased",
+#    "bert_model_dir": None,
+#    "bert_vocab_name": "vocab.txt"
+#  },
+#  {
+#    # "OpenAI GPT"
+#    "lm": "gpt",
+#    "gpt_model_dir": None,
+#    "gpt_model_name": "openai-gpt"
+#  }
 ]
 
 LOWERCASED_COMMON_VOCAB_FILENAME = "pre-trained_language_models/common_vocab_lowercased.txt"
@@ -149,7 +149,7 @@ def __vocab_intersection(models, filename):
 
 def main():
     # cased version
-    __vocab_intersection(CASED_MODELS, CASED_COMMON_VOCAB_FILENAME)
+    # __vocab_intersection(CASED_MODELS, CASED_COMMON_VOCAB_FILENAME)
     # lowercased version
     __vocab_intersection(LOWERCASED_MODELS, LOWERCASED_COMMON_VOCAB_FILENAME)
 
