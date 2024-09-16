@@ -102,7 +102,7 @@ def run_experiments(
             "full_logdir": "output/results/{}/{}".format(
                 input_param["label"], relation["relation"]
             ),
-            "lowercase": False,
+            "lowercase": True,
             "max_sentence_length": 100,
             "threads": -1,
             "interactive": False,
