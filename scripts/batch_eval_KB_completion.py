@@ -203,8 +203,10 @@ def lowercase_samples(samples, use_negated_probes=False):
         sample["obj_label"] = sample["obj_label"].lower()
         sample["sub_label"] = sample["sub_label"].lower()
         lower_masked_sentences = []
+        if "masked_sentence" not in sample and "masked_sentences" not in sample:
+            print("ERROR: no masked_sentence or masked_sentences in sample")
+
         if "masked_sentences" not in sample:
-            assert "masked_sentence" in sample or "masked_sentences" in sample
             for sentence in sample["masked_sentence"]:
                 sentence = sentence.lower()
                 sentence = sentence.replace(base.MASK.lower(), base.MASK)
@@ -385,6 +387,7 @@ def main(args, shuffle_data=True, model=None):
     # if the key is "masked_sentence" replace it with "masked_sentences"
     for sample in data:
         if "masked_sentence" in sample and "masked_sentences" not in sample:
+            print("WARNING: masked_sentence in sample")
             sample["masked_sentences"] = sample["masked_sentence"]
             del sample["masked_sentence"]
             assert "masked_sentences" in sample
