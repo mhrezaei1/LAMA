@@ -377,9 +377,10 @@ def main(args, shuffle_data=True, model=None):
     # data is a list of dictionaries
     # if the key is "masked_sentence" replace it with "masked_sentences"
     for sample in data:
-        if "masked_sentence" in sample:
-            sample["masked_sentences"] = [sample["masked_sentence"]]
+        if "masked_sentence" in sample and "masked_sentences" not in sample:
+            sample["masked_sentences"] = sample["masked_sentence"]
             del sample["masked_sentence"]
+            assert "masked_sentences" in sample
 
     print(f"len data is {len(data)}")
 
