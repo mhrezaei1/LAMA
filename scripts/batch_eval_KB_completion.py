@@ -382,7 +382,7 @@ def main(args, shuffle_data=True, model=None):
         num_valid_negation = 0.0
 
     data = load_file(args.dataset_filename)
-
+    print(args.dataset_filename)
     # data is a list of dictionaries
     # if the key is "masked_sentence" replace it with "masked_sentences"
     for sample in data:
