@@ -204,6 +204,7 @@ def lowercase_samples(samples, use_negated_probes=False):
         sample["sub_label"] = sample["sub_label"].lower()
         lower_masked_sentences = []
         if "masked_sentences" not in sample:
+            assert "masked_sentence" in sample
             for sentence in sample["masked_sentence"]:
                 sentence = sentence.lower()
                 sentence = sentence.replace(base.MASK.lower(), base.MASK)
