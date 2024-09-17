@@ -226,7 +226,7 @@ if __name__ == "__main__":
 
     print("3. ConceptNet")
     parameters = get_ConceptNet_parameters()
-    run_all_LMs(parameters)
+    # run_all_LMs(parameters)
 
     print("4. SQuAD")
     parameters = get_Squad_parameters()
