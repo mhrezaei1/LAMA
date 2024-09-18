@@ -414,13 +414,9 @@ def main(args, shuffle_data=True, model=None):
                 if i == 0:
                     print('not masked_sentences, but masked_sentence.')
 
-    print(f"len all_samples after lowercase is {len(all_samples)}")
-        
-    # all_samples, ret_msg = filter_samples(
-    #     model, data, vocab_subset, args.max_sentence_length, args.template
-    # )
-
-    # print(ret_msg)
+    all_samples, ret_msg = filter_samples(
+        model, data, vocab_subset, args.max_sentence_length, args.template
+    )
 
     # OUT_FILENAME = "{}.jsonl".format(args.dataset_filename)
     # with open(OUT_FILENAME, 'w') as outfile:
@@ -428,7 +424,7 @@ def main(args, shuffle_data=True, model=None):
     #         json.dump(entry, outfile)
     #         outfile.write('\n')
 
-    # logger.info("\n" + ret_msg + "\n")
+    logger.info("\n" + ret_msg + "\n")
 
     print(f"len all_samples is {len(all_samples)}")
 
@@ -461,8 +457,6 @@ def main(args, shuffle_data=True, model=None):
                     base.MASK,
                 )
             all_samples.append(sample)
-
-    print(all_samples)
 
     # create uuid if not present
     i = 0
@@ -514,23 +508,23 @@ def main(args, shuffle_data=True, model=None):
         for sample in samples_b:
             obj_label_id = model.get_id(sample["obj_label"])
 
-            # # MAKE SURE THAT obj_label IS IN VOCABULARIES
-            # if obj_label_id is None:
-            #     raise ValueError(
-            #         "object label {} not in model vocabulary".format(
-            #             sample["obj_label"]
-            #         )
-            #     )
-            # elif model.vocab[obj_label_id[0]] != sample["obj_label"]:
-            #     raise ValueError(
-            #         "object label {} not in model vocabulary".format(
-            #             sample["obj_label"]
-            #         )
-            #     )
-            # elif vocab_subset is not None and sample["obj_label"] not in vocab_subset:
-            #     raise ValueError(
-            #         "object label {} not in vocab subset".format(sample["obj_label"])
-            #     )
+            # MAKE SURE THAT obj_label IS IN VOCABULARIES
+            if obj_label_id is None:
+                raise ValueError(
+                    "object label {} not in model vocabulary".format(
+                        sample["obj_label"]
+                    )
+                )
+            elif model.vocab[obj_label_id[0]] != sample["obj_label"]:
+                raise ValueError(
+                    "object label {} not in model vocabulary".format(
+                        sample["obj_label"]
+                    )
+                )
+            elif vocab_subset is not None and sample["obj_label"] not in vocab_subset:
+                raise ValueError(
+                    "object label {} not in vocab subset".format(sample["obj_label"])
+                )
 
             label_index_list.append(obj_label_id)
 

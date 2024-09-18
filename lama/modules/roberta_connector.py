@@ -1,6 +1,14 @@
-from transformers import RobertaModel, RobertaTokenizer
+# Copyright (c) Facebook, Inc. and its affiliates.
+# All rights reserved.
+#
+# This source code is licensed under the license found in the
+# LICENSE file in the root directory of this source tree.
+#
+from fairseq.models.roberta import RobertaModel
+from fairseq import utils
 import torch
 from lama.modules.base_connector import *
+
 
 class RobertaVocab(object):
     def __init__(self, roberta):
@@ -9,16 +17,19 @@ class RobertaVocab(object):
     def __getitem__(self, arg):
         value = ""
         try:
-            predicted_token_bpe = self.roberta.tokenizer.convert_ids_to_tokens([arg])[0]
-            if predicted_token_bpe.strip() == ROBERTA_MASK or predicted_token_bpe.strip() == ROBERTA_START_SENTENCE:
+            predicted_token_bpe = self.roberta.task.source_dictionary.string([arg])
+            if (
+                predicted_token_bpe.strip() == ROBERTA_MASK
+                or predicted_token_bpe.strip() == ROBERTA_START_SENTENCE
+            ):
                 value = predicted_token_bpe.strip()
             else:
-                value = self.roberta.tokenizer.decode([arg]).strip()
+                value = self.roberta.bpe.decode(str(predicted_token_bpe)).strip()
         except Exception as e:
             print(arg)
             print(predicted_token_bpe)
             print(value)
-            print(f"Exception {e} for input {arg}")
+            print("Exception {} for input {}".format(e, arg))
         return value
 
 
@@ -27,62 +38,91 @@ class Roberta(Base_Connector):
         super().__init__()
         roberta_model_dir = args.roberta_model_dir
         roberta_model_name = args.roberta_model_name
-        
-        # Load the RoBERTa model and tokenizer
-        self.model = RobertaModel.from_pretrained("roberta-base")
-        self.tokenizer = RobertaTokenizer.from_pretrained("roberta-base")
-
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.model.to(self.device)  # Move model to device
-
+        roberta_vocab_name = args.roberta_vocab_name
+        self.dict_file = "{}/{}".format(roberta_model_dir, roberta_vocab_name)
+        self.model = RobertaModel.from_pretrained(
+            roberta_model_dir, checkpoint_file=roberta_model_name
+        )
+        self.bpe = self.model.bpe
+        self.task = self.model.task
         self._build_vocab()
         self._init_inverse_vocab()
-        self.max_sentence_length = 128 # args.max_sentence_length
+        self.max_sentence_length = args.max_sentence_length
 
     def _cuda(self):
-        self.model.to(self.device)  # Use device attribute here
+        self.model.cuda()
 
     def _build_vocab(self):
         self.vocab = []
-        for key in range(self.tokenizer.vocab_size):
-        # for key in range(200):
-            predicted_token_bpe = self.tokenizer.convert_ids_to_tokens([key])[0]
-            value = self.tokenizer.decode([key]).strip()
-            
-            # Check if value is not empty before accessing its first character
-            if value and value[0] == " ":  # if the token starts with a whitespace
-                value = value.strip()
-            else:
-                value = f"_{value}_"
-            
-            # Avoid duplicate entries in the vocab
-            if value in self.vocab:
-                value = f"{value}_{key}"
+        for key in range(ROBERTA_VOCAB_SIZE):
+            predicted_token_bpe = self.task.source_dictionary.string([key])
+            try:
+                value = self.bpe.decode(predicted_token_bpe)
 
-            self.vocab.append(value)
-        print(f"Vocab size: {len(self.vocab)}")
+                if value[0] == " ":  # if the token starts with a whitespace
+                    value = value.strip()
+                else:
+                    # this is subword information
+                    value = "_{}_".format(value)
+
+                if value in self.vocab:
+                    # print("WARNING: token '{}' is already in the vocab".format(value))
+                    value = "{}_{}".format(value, key)
+
+                self.vocab.append(value)
+
+            except Exception as e:
+                self.vocab.append(predicted_token_bpe.strip())
 
     def get_id(self, input_string):
-        tokens = self.tokenizer.encode(input_string, add_special_tokens=False)
-        return tokens
+        # Roberta predicts ' London' and not 'London'
+        string = " " + str(input_string).strip()
+        text_spans_bpe = self.bpe.encode(string.rstrip())
+        tokens = self.task.source_dictionary.encode_line(
+            text_spans_bpe, append_eos=False
+        )
+        return [element.item() for element in tokens.long().flatten()]
 
     def get_batch_generation(self, sentences_list, logger=None, try_cuda=True):
         if not sentences_list:
             return None
         if try_cuda:
-            self._cuda()
+            self.try_cuda()
 
         tensor_list = []
         masked_indices_list = []
         max_len = 0
         output_tokens_list = []
-        
         for masked_inputs_list in sentences_list:
+
             tokens_list = []
-            for masked_input in masked_inputs_list:
-                masked_input = masked_input.replace(MASK, self.tokenizer.mask_token)
-                tokens = self.tokenizer.encode(masked_input, add_special_tokens=True)
-                tokens_list.append(torch.tensor(tokens))
+
+            for idx, masked_input in enumerate(masked_inputs_list):
+
+                # 2. sobstitute [MASK] with <mask>
+                masked_input = masked_input.replace(MASK, ROBERTA_MASK)
+
+                text_spans = masked_input.split(ROBERTA_MASK)
+                text_spans_bpe = (
+                    (" {0} ".format(ROBERTA_MASK))
+                    .join(
+                        [
+                            self.bpe.encode(text_span.rstrip())
+                            for text_span in text_spans
+                        ]
+                    )
+                    .strip()
+                )
+
+                prefix = ""
+                if idx == 0:
+                    prefix = ROBERTA_START_SENTENCE
+
+                tokens_list.append(
+                    self.task.source_dictionary.encode_line(
+                        str(prefix + " " + text_spans_bpe).strip(), append_eos=True
+                    )
+                )
 
             tokens = torch.cat(tokens_list)[: self.max_sentence_length]
             output_tokens_list.append(tokens.long().cpu().numpy())
@@ -90,32 +130,33 @@ class Roberta(Base_Connector):
             if len(tokens) > max_len:
                 max_len = len(tokens)
             tensor_list.append(tokens)
-            masked_index = (tokens == self.tokenizer.mask_token_id).nonzero().numpy()
+            masked_index = (tokens == self.task.mask_idx).nonzero().numpy()
             for x in masked_index:
                 masked_indices_list.append([x[0]])
 
-        pad_id = self.tokenizer.pad_token_id
+        pad_id = self.task.source_dictionary.pad()
         tokens_list = []
         for tokens in tensor_list:
-            pad_length = max_len - len(tokens)
-            if pad_length > 0:
-                pad_tensor = torch.full([pad_length], pad_id, dtype=tokens.dtype)  # Ensure dtype matches tokens
+            pad_lenght = max_len - len(tokens)
+            if pad_lenght > 0:
+                pad_tensor = torch.full([pad_lenght], pad_id, dtype=torch.int)
                 tokens = torch.cat((tokens, pad_tensor))
             tokens_list.append(tokens)
 
         batch_tokens = torch.stack(tokens_list)
 
         with torch.no_grad():
+            # with utils.eval(self.model.model):
             self.model.eval()
-            outputs = self.model(batch_tokens.to(self.device))
-            # Huggingface models return a tuple, so unpack it:
-            logits = outputs[0]  # The first element is usually the logits
-
-        log_probs = torch.log_softmax(logits, dim=-1)
+            self.model.model.eval()
+            log_probs, extra = self.model.model(
+                batch_tokens.long().to(device=self._model_device),
+                features_only=False,
+                return_all_hiddens=False,
+            )
 
         return log_probs.cpu(), output_tokens_list, masked_indices_list
-    
 
     def get_contextual_embeddings(self, sentences_list, try_cuda=True):
-        # To be implemented
+        # TBA
         return None

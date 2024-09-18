@@ -56,22 +56,12 @@ LMs = [
     #     "bert_model_name": "bert-large-cased",
     #     "bert_model_dir": "pre-trained_language_models/bert/cased_L-24_H-1024_A-16",
     # },
-
-
-    # {
-    #     "lm": "bert",
-    #     "label": "bert_base",
-    #     "models_names": ["bert"],
-    #     "bert_model_name": "bert-base-uncased",
-    #     "bert_model_dir": "pre-trained_language_models/bert/uncased_L-12_H-768_A-12",
-    # },
-
     {
-        "lm": "roberta",
-        "label": "roberta_base",
-        "models_names": ["roberta"],
-        "roberta_model_name": "roberta-base",
-        "roberta_model_dir": "roberta-base",
+        "lm": "bert",
+        "label": "bert_base",
+        "models_names": ["bert"],
+        "bert_model_name": "bert-base-uncased",
+        "bert_model_dir": "pre-trained_language_models/bert/uncased_L-12_H-768_A-12",
     },
 ]
 
@@ -228,7 +218,7 @@ if __name__ == "__main__":
 
     print("1. Google-RE")
     parameters = get_GoogleRE_parameters()
-    run_all_LMs(parameters)
+    # run_all_LMs(parameters)
 
     print("2. T-REx")
     parameters = get_TREx_parameters()
@@ -236,7 +226,7 @@ if __name__ == "__main__":
 
     print("3. ConceptNet")
     parameters = get_ConceptNet_parameters()
-    # run_all_LMs(parameters)
+    run_all_LMs(parameters)
 
     print("4. SQuAD")
     parameters = get_Squad_parameters()

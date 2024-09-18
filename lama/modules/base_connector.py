@@ -119,11 +119,8 @@ class Base_Connector():
         return indices, index_list
 
     def filter_logprobs(self, log_probs, indices):
-        # Ensure the indices are of type Long
-        indices = indices.long()
-        new_log_probs = log_probs.index_select(dim=2, index=indices)
+        new_log_probs = log_probs.index_select(dim=2 , index=indices)
         return new_log_probs
-
 
     def get_id(self, string):
         raise NotImplementedError()
