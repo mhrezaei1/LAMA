@@ -68,7 +68,7 @@ LMs = [
 
     {
         "lm": "roberta",
-        "label": "bert_base",
+        "label": "roberta_base",
         "models_names": ["roberta"],
         "roberta_model_name": "roberta-base",
         "roberta_model_dir": "roberta-base",

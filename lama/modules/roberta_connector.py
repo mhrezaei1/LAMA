@@ -107,12 +107,15 @@ class Roberta(Base_Connector):
 
         with torch.no_grad():
             self.model.eval()
-            outputs = self.model(batch_tokens.to(self.device))  # Use device attribute here
-            log_probs = outputs.logits
+            outputs = self.model(batch_tokens.to(self.device))
+            # Huggingface models return a tuple, so unpack it:
+            logits = outputs[0]  # The first element is usually the logits
+
+        log_probs = torch.log_softmax(logits, dim=-1)
 
         return log_probs.cpu(), output_tokens_list, masked_indices_list
     
-    
+
     def get_contextual_embeddings(self, sentences_list, try_cuda=True):
         # To be implemented
         return None
