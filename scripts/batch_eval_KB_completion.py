@@ -428,7 +428,7 @@ def main(args, shuffle_data=True, model=None):
     #         json.dump(entry, outfile)
     #         outfile.write('\n')
 
-    logger.info("\n" + ret_msg + "\n")
+    # logger.info("\n" + ret_msg + "\n")
 
     print(f"len all_samples is {len(all_samples)}")
 
