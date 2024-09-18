@@ -14,8 +14,8 @@ import lama.modules.base_connector as base
 LOWERCASED_MODELS = [
  {
    # "BERT BASE UNCASED"
-   "lm": "bert",
-   "bert_model_name": "bert-base-uncased",
+   "lm": "roberta",
+   "bert_model_name": "roberta-base",
    "bert_model_dir": None,
    "bert_vocab_name": "vocab.txt"
  },
