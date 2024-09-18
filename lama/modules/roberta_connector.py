@@ -46,7 +46,7 @@ class Roberta(Base_Connector):
             "roberta-base"
         )
         # self.bpe = self.model.bpe
-        self.bpe = RobertaTokenizer.from_pretrained(roberta_model_dir)
+        self.bpe = RobertaTokenizer.from_pretrained("roberta-base")
         self.task = self.model.task
         self._build_vocab()
         self._init_inverse_vocab()
