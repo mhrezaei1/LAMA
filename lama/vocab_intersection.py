@@ -22,7 +22,7 @@ LOWERCASED_MODELS = [
    {
       "lm": "roberta",
       "roberta_model_name": "roberta-base",
-      "roberta_model_dir": "./pre-trained_language_models/roberta-base/pytorch_model.bin",
+      "roberta_model_dir": "./pre-trained_language_models/",
       "roberta_vocab_name": "vocab.json"
    }
 #  {
