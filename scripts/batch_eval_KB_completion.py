@@ -22,6 +22,7 @@ from multiprocessing.pool import ThreadPool
 import multiprocessing
 import lama.evaluation_metrics as metrics
 import time, sys
+import random
 
 
 def load_file(filename):
@@ -489,6 +490,9 @@ def main(args, shuffle_data=True, model=None):
 
         samples_b = samples_batches[i]
         sentences_b = sentences_batches[i]
+
+        for sentence in sentences_b:
+            print(sentence) if random.random() < 0.3 else None
 
         (
             original_log_probs_list,
