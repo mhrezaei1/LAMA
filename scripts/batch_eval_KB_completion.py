@@ -462,6 +462,8 @@ def main(args, shuffle_data=True, model=None):
                 )
             all_samples.append(sample)
 
+    print(all_samples)
+
     # create uuid if not present
     i = 0
     for sample in all_samples:
