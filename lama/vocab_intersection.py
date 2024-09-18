@@ -70,25 +70,26 @@ def __vocab_intersection(models, filename):
         # remove punctuation and symbols
         nlp = spacy.load('en')
         manual_punctuation = ['(', ')', '.', ',']
-        special_tokens = {"<s>", "</s>", "<unk>", "<pad>"}  # RoBERTa special tokens
+        special_tokens = {"<s>", "</s>", "<unk>", "<pad>"}  # Add your special tokens here
 
         new_common_vocab = []
         for i in tqdm(range(len(common_vocab))):
             word = common_vocab[i]
 
-            # Skip RoBERTa special tokens
-            if word in special_tokens:
-                print(f"Skipping special token: {word}")
+            # Skip special tokens
+            if word in special_tokens or word.startswith("_<") or word.endswith("_"):
+                print(f"Skipping special token or malformed token: {word}")
                 continue
 
             doc = nlp(word)
             token = doc[0]
 
+            # Skip tokens that are split into multiple parts
             if len(doc) != 1:
-                print(f"Word with len(doc) != 1: {word}")
-                for idx, tok in enumerate(doc):
-                    print(f"{idx} - {tok}")
-            elif word in manual_punctuation:
+                print(f"Skipping token with len(doc) != 1: {word}")
+                continue
+
+            if word in manual_punctuation:
                 continue
             elif token.pos_ == "PUNCT":
                 continue
@@ -103,6 +104,7 @@ def __vocab_intersection(models, filename):
         with open(filename, 'w') as f:
             for item in sorted(common_vocab):
                 f.write(f"{item}\n")
+
 
 
 
