@@ -44,10 +44,17 @@ class Roberta(Base_Connector):
         for key in range(self.tokenizer.vocab_size):
             predicted_token_bpe = self.tokenizer.convert_ids_to_tokens([key])[0]
             value = self.tokenizer.decode([key]).strip()
-            if value[0] == " ":  # if the token starts with a whitespace
+            
+            # Check if value is not empty before accessing its first character
+            if value and value[0] == " ":  # if the token starts with a whitespace
                 value = value.strip()
             else:
                 value = f"_{value}_"
+            
+            # Avoid duplicate entries in the vocab
+            if value in self.vocab:
+                value = f"{value}_{key}"
+
             self.vocab.append(value)
 
     def get_id(self, input_string):
