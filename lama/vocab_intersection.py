@@ -12,13 +12,19 @@ import lama.modules.base_connector as base
 
 
 LOWERCASED_MODELS = [
- {
-   # "BERT BASE UNCASED"
-   "lm": "roberta",
-   "bert_model_name": "roberta-base",
-   "bert_model_dir": None,
-   "bert_vocab_name": "vocab.txt"
- },
+#  {
+#    # "BERT BASE UNCASED"
+#    "lm": "bert",
+#    "bert_model_name": "bert-base-uncased",
+#    "bert_model_dir": None,
+#    "bert_vocab_name": "vocab.txt"
+#  },
+   {
+      "lm": "roberta",
+      "roberta_model_name": "roberta-base",
+      "roberta_model_dir": None,
+      "roberta_vocab_name": "vocab.json"
+   }
 #  {
 #    # "BERT LARGE UNCASED"
 #    "lm": "bert",
