@@ -414,6 +414,8 @@ def main(args, shuffle_data=True, model=None):
                 if i == 0:
                     print('not masked_sentences, but masked_sentence.')
 
+    print(f"len all_samples after lowercase is {len(all_samples)}")
+        
     all_samples, ret_msg = filter_samples(
         model, data, vocab_subset, args.max_sentence_length, args.template
     )
