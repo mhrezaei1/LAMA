@@ -90,6 +90,9 @@ def __vocab_intersection(models, filename):
                 word = word[1:-1]
 
             doc = nlp(word)
+            if len(doc) == 0:
+                print(f"Skipping empty token: {word}")
+                continue
             token = doc[0]
 
             # Skip tokens that are split into multiple parts
