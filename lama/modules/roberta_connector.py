@@ -4,7 +4,8 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 #
-from fairseq.models.roberta import RobertaModel
+# from fairseq.models.roberta import RobertaModel
+from transformers import RobertaModel
 from fairseq import utils
 import torch
 from lama.modules.base_connector import *
@@ -41,7 +42,8 @@ class Roberta(Base_Connector):
         roberta_vocab_name = args.roberta_vocab_name
         self.dict_file = "{}/{}".format(roberta_model_dir, roberta_vocab_name)
         self.model = RobertaModel.from_pretrained(
-            roberta_model_dir, checkpoint_file=roberta_model_name
+            # roberta_model_dir, checkpoint_file=roberta_model_name
+            "roberta-base"
         )
         self.bpe = self.model.bpe
         self.task = self.model.task
