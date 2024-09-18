@@ -12,19 +12,19 @@ import lama.modules.base_connector as base
 
 
 LOWERCASED_MODELS = [
- {
-   # "BERT BASE UNCASED"
-   "lm": "bert",
-   "bert_model_name": "bert-base-uncased",
-   "bert_model_dir": None,
-   "bert_vocab_name": "vocab.txt"
- },
-  #  {
-  #     "lm": "roberta",
-  #     "roberta_model_name": "pytorch_model.bin",
-  #     "roberta_model_dir": "./pre-trained_language_models/roberta-base/",
-  #     "roberta_vocab_name": "vocab.json"
-  #  }
+#  {
+#    # "BERT BASE UNCASED"
+#    "lm": "bert",
+#    "bert_model_name": "bert-base-uncased",
+#    "bert_model_dir": None,
+#    "bert_vocab_name": "vocab.txt"
+#  },
+   {
+      "lm": "roberta",
+      "roberta_model_name": "pytorch_model.bin",
+      "roberta_model_dir": "./pre-trained_language_models/roberta-base/",
+      "roberta_vocab_name": "vocab.json"
+   }
 #  {
 #    # "BERT LARGE UNCASED"
 #    "lm": "bert",
@@ -38,15 +38,12 @@ LOWERCASED_COMMON_VOCAB_FILENAME = "pre-trained_language_models/common_vocab_low
 
 
 def __vocab_intersection(models, filename):
-
     vocabularies = []
 
     for arg_dict in models:
-
         args = argparse.Namespace(**arg_dict)
         print(args)
         model = build_model_by_name(args.lm, args)
-
         vocabularies.append(model.vocab)
         print(len(model.vocab))
         print(type(model.vocab))
@@ -73,30 +70,40 @@ def __vocab_intersection(models, filename):
         # remove punctuation and symbols
         nlp = spacy.load('en')
         manual_punctuation = ['(', ')', '.', ',']
+        special_tokens = {"<s>", "</s>", "<unk>", "<pad>"}  # RoBERTa special tokens
+
         new_common_vocab = []
         for i in tqdm(range(len(common_vocab))):
             word = common_vocab[i]
+
+            # Skip RoBERTa special tokens
+            if word in special_tokens:
+                print(f"Skipping special token: {word}")
+                continue
+
             doc = nlp(word)
             token = doc[0]
-            if(len(doc) != 1):
-                print(word)
+
+            if len(doc) != 1:
+                print(f"Word with len(doc) != 1: {word}")
                 for idx, tok in enumerate(doc):
-                    print("{} - {}".format(idx, tok))
+                    print(f"{idx} - {tok}")
             elif word in manual_punctuation:
-                pass
+                continue
             elif token.pos_ == "PUNCT":
-                print("PUNCT: {}".format(word))
+                continue
             elif token.pos_ == "SYM":
-                print("SYM: {}".format(word))
+                continue
             else:
                 new_common_vocab.append(word)
-            # print("{} - {}".format(word, token.pos_))
+
         common_vocab = new_common_vocab
 
         # store common_vocab on file
         with open(filename, 'w') as f:
             for item in sorted(common_vocab):
-                f.write("{}\n".format(item))
+                f.write(f"{item}\n")
+
 
 
 def main():
