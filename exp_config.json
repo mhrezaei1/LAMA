@@ -1,0 +1,5 @@
+{
+    "model_type": "roberta",
+    "model_parent": "roberta-base",
+    "model_path": "roberta-base"   
+}
