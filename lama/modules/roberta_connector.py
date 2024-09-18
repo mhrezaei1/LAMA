@@ -34,7 +34,7 @@ class Roberta(Base_Connector):
 
         self._build_vocab()
         self._init_inverse_vocab()
-        self.max_sentence_length = args.max_sentence_length
+        self.max_sentence_length = 128 # args.max_sentence_length
 
     def _cuda(self):
         self.model.cuda()
