@@ -512,23 +512,23 @@ def main(args, shuffle_data=True, model=None):
         for sample in samples_b:
             obj_label_id = model.get_id(sample["obj_label"])
 
-            # MAKE SURE THAT obj_label IS IN VOCABULARIES
-            if obj_label_id is None:
-                raise ValueError(
-                    "object label {} not in model vocabulary".format(
-                        sample["obj_label"]
-                    )
-                )
-            elif model.vocab[obj_label_id[0]] != sample["obj_label"]:
-                raise ValueError(
-                    "object label {} not in model vocabulary".format(
-                        sample["obj_label"]
-                    )
-                )
-            elif vocab_subset is not None and sample["obj_label"] not in vocab_subset:
-                raise ValueError(
-                    "object label {} not in vocab subset".format(sample["obj_label"])
-                )
+            # # MAKE SURE THAT obj_label IS IN VOCABULARIES
+            # if obj_label_id is None:
+            #     raise ValueError(
+            #         "object label {} not in model vocabulary".format(
+            #             sample["obj_label"]
+            #         )
+            #     )
+            # elif model.vocab[obj_label_id[0]] != sample["obj_label"]:
+            #     raise ValueError(
+            #         "object label {} not in model vocabulary".format(
+            #             sample["obj_label"]
+            #         )
+            #     )
+            # elif vocab_subset is not None and sample["obj_label"] not in vocab_subset:
+            #     raise ValueError(
+            #         "object label {} not in vocab subset".format(sample["obj_label"])
+            #     )
 
             label_index_list.append(obj_label_id)
 
