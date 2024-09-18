@@ -42,7 +42,7 @@ class Roberta(Base_Connector):
     def _build_vocab(self):
         self.vocab = []
         # for key in range(self.tokenizer.vocab_size):
-        for key in range(100):
+        for key in range(5):
             predicted_token_bpe = self.tokenizer.convert_ids_to_tokens([key])[0]
             value = self.tokenizer.decode([key]).strip()
             
