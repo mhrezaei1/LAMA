@@ -5,7 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 # from fairseq.models.roberta import RobertaModel
-from transformers import RobertaModel
+from transformers import RobertaModel, RobertaTokenizer
 from fairseq import utils
 import torch
 from lama.modules.base_connector import *
@@ -45,7 +45,8 @@ class Roberta(Base_Connector):
             # roberta_model_dir, checkpoint_file=roberta_model_name
             "roberta-base"
         )
-        self.bpe = self.model.bpe
+        # self.bpe = self.model.bpe
+        self.bpe = RobertaTokenizer.from_pretrained(roberta_model_dir)
         self.task = self.model.task
         self._build_vocab()
         self._init_inverse_vocab()
