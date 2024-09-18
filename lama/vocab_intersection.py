@@ -48,6 +48,7 @@ def __vocab_intersection(models, filename):
         model = build_model_by_name(args.lm, args)
 
         vocabularies.append(model.vocab)
+        print(len(model.vocab))
         print(type(model.vocab))
 
     if len(vocabularies) > 0:

@@ -41,7 +41,8 @@ class Roberta(Base_Connector):
 
     def _build_vocab(self):
         self.vocab = []
-        for key in range(self.tokenizer.vocab_size):
+        # for key in range(self.tokenizer.vocab_size):
+        for key in range(100):
             predicted_token_bpe = self.tokenizer.convert_ids_to_tokens([key])[0]
             value = self.tokenizer.decode([key]).strip()
             
@@ -56,6 +57,7 @@ class Roberta(Base_Connector):
                 value = f"{value}_{key}"
 
             self.vocab.append(value)
+        print(f"Vocab size: {len(self.vocab)}")
 
     def get_id(self, input_string):
         tokens = self.tokenizer.encode(input_string, add_special_tokens=False)
