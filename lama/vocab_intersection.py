@@ -85,6 +85,9 @@ def __vocab_intersection(models, filename):
             if word.startswith("_<") and word.endswith(">_"):
                 print(f"Skipping malformed token: {word}")
                 continue
+            
+            if word[0] == "_" and word[-1] == "_":
+                word = word[1:-1]
 
             doc = nlp(word)
             token = doc[0]
