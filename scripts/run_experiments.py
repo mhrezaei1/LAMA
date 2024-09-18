@@ -56,12 +56,22 @@ LMs = [
     #     "bert_model_name": "bert-large-cased",
     #     "bert_model_dir": "pre-trained_language_models/bert/cased_L-24_H-1024_A-16",
     # },
+
+
+    # {
+    #     "lm": "bert",
+    #     "label": "bert_base",
+    #     "models_names": ["bert"],
+    #     "bert_model_name": "bert-base-uncased",
+    #     "bert_model_dir": "pre-trained_language_models/bert/uncased_L-12_H-768_A-12",
+    # },
+
     {
-        "lm": "bert",
+        "lm": "roberta",
         "label": "bert_base",
-        "models_names": ["bert"],
-        "bert_model_name": "bert-base-uncased",
-        "bert_model_dir": "pre-trained_language_models/bert/uncased_L-12_H-768_A-12",
+        "models_names": ["roberta"],
+        "bert_model_name": "roberta-base",
+        "bert_model_dir": "roberta-base",
     },
 ]
 
