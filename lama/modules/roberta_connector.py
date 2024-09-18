@@ -96,9 +96,10 @@ class Roberta(Base_Connector):
         for tokens in tensor_list:
             pad_length = max_len - len(tokens)
             if pad_length > 0:
-                pad_tensor = torch.full([pad_length], pad_id, dtype=torch.int)
+                pad_tensor = torch.full([pad_length], pad_id, dtype=tokens.dtype)  # Ensure dtype matches tokens
                 tokens = torch.cat((tokens, pad_tensor))
             tokens_list.append(tokens)
+
 
         batch_tokens = torch.stack(tokens_list)
 
