@@ -420,6 +420,8 @@ def main(args, shuffle_data=True, model=None):
         model, data, vocab_subset, args.max_sentence_length, args.template
     )
 
+    print(ret_msg)
+
     # OUT_FILENAME = "{}.jsonl".format(args.dataset_filename)
     # with open(OUT_FILENAME, 'w') as outfile:
     #     for entry in all_samples:
