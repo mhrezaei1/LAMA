@@ -32,12 +32,15 @@ class Roberta(Base_Connector):
         self.model = RobertaModel.from_pretrained("roberta-base")
         self.tokenizer = RobertaTokenizer.from_pretrained("roberta-base")
 
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.model.to(self.device)  # Move model to device
+
         self._build_vocab()
         self._init_inverse_vocab()
         self.max_sentence_length = 128 # args.max_sentence_length
 
     def _cuda(self):
-        self.model.cuda()
+        self.model.to(self.device)  # Use device attribute here
 
     def _build_vocab(self):
         self.vocab = []
@@ -100,16 +103,16 @@ class Roberta(Base_Connector):
                 tokens = torch.cat((tokens, pad_tensor))
             tokens_list.append(tokens)
 
-
         batch_tokens = torch.stack(tokens_list)
 
         with torch.no_grad():
             self.model.eval()
-            outputs = self.model(batch_tokens.to(self.model.device))
+            outputs = self.model(batch_tokens.to(self.device))  # Use device attribute here
             log_probs = outputs.logits
 
         return log_probs.cpu(), output_tokens_list, masked_indices_list
-
+    
+    
     def get_contextual_embeddings(self, sentences_list, try_cuda=True):
         # To be implemented
         return None
