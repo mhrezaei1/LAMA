@@ -134,7 +134,9 @@ def run_experiments(
         Precision1, sentences_and_labels = run_evaluation(args, shuffle_data=False, model=model)
         print("P@1 : {}".format(Precision1), flush=True)
         all_Precision1.append(Precision1)
-        with open("./sents/{}.pkl".format(input_param["label"]+"_"+relation["relation"]), "wb") as f:
+        import os
+
+        with open("./sents/{}.pkl".format(data_path_pre+"_"+relation["relation"]), "wb") as f:
             pickle.dump(sentences_and_labels, f)
 
         results_file.write(
