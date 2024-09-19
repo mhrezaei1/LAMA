@@ -487,10 +487,10 @@ def main(args, shuffle_data=True, model=None):
     list_of_results = []
     sentences_and_labels = []
     for i in tqdm(range(len(samples_batches))):
-        assert len(samples_batches) == len(sentences_batches)
+        # assert len(samples_batches) == len(sentences_batches)
 
-        for sample, sentence in zip(samples_batches[i], sentences_batches[i]):
-            sentences_and_labels.append((sentence, sample["obj_label"]))
+        # for sample, sentence in zip(samples_batches[i], sentences_batches[i]):
+        #     sentences_and_labels.append((sentence, sample["obj_label"]))
 
         samples_b = samples_batches[i]
         sentences_b = sentences_batches[i]

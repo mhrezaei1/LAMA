@@ -136,8 +136,8 @@ def run_experiments(
         all_Precision1.append(Precision1)
         import os
 
-        with open("./sents/{}.pkl".format(data_path_pre+"_"+relation["relation"]), "wb") as f:
-            pickle.dump(sentences_and_labels, f)
+        # with open("./sents/{}.pkl".format(data_path_pre+"_"+relation["relation"]), "wb") as f:
+        #     pickle.dump(sentences_and_labels, f)
 
         results_file.write(
             "{},{}\n".format(relation["relation"], round(Precision1 * 100, 2))
@@ -169,7 +169,7 @@ def run_experiments(
     return mean_p1, all_Precision1
 
 
-def get_TREx_parameters(data_path_pre="data/"):
+def get_TREx_parameters(data_path_pre="../recent-LAMA/negated_data/"):
     relations = load_file("{}relations.jsonl".format(data_path_pre))
     data_path_pre += "TREx/"
     data_path_post = ".jsonl"
@@ -194,19 +194,19 @@ def get_GoogleRE_parameters():
             "template_negated": "[X] did not die in [Y] .",
         },
     ]
-    data_path_pre = "data/Google_RE/"
+    data_path_pre = "../recent-LAMA/negated_data/Google_RE/"
     data_path_post = "_test.jsonl"
     return relations, data_path_pre, data_path_post
 
 
-def get_ConceptNet_parameters(data_path_pre="data/"):
+def get_ConceptNet_parameters(data_path_pre="../recent-LAMA/negated_data/"):
     relations = [{"relation": "test"}]
     data_path_pre += "ConceptNet/"
     data_path_post = ".jsonl"
     return relations, data_path_pre, data_path_post
 
 
-def get_Squad_parameters(data_path_pre="data/"):
+def get_Squad_parameters(data_path_pre="../recent-LAMA/negated_data/"):
     relations = [{"relation": "test"}]
     data_path_pre += "Squad/"
     data_path_post = ".jsonl"
@@ -216,7 +216,7 @@ def get_Squad_parameters(data_path_pre="data/"):
 def run_all_LMs(parameters):
     for ip in LMs:
         print(ip["label"])
-        run_experiments(*parameters, input_param=ip, use_negated_probes=False)
+        run_experiments(*parameters, input_param=ip, use_negated_probes=True)
 
 
 if __name__ == "__main__":
