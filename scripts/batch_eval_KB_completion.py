@@ -495,8 +495,8 @@ def main(args, shuffle_data=True, model=None):
         samples_b = samples_batches[i]
         sentences_b = sentences_batches[i]
 
-        for sentence in sentences_b:
-            print(sentence) if random.random() < 0.3 else None
+        # for sentence in sentences_b:
+        #     print(sentence) if random.random() < 0.3 else None
 
         (
             original_log_probs_list,
