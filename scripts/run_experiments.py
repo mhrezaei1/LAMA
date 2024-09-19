@@ -15,7 +15,7 @@ import os
 from os.path import isfile, join
 from shutil import copyfile
 from collections import defaultdict
-
+import pickle
 LMs = [
     # {
     #     "lm": "transformerxl",
@@ -131,9 +131,11 @@ def run_experiments(
             [model_type_name] = args.models_names
             model = build_model_by_name(model_type_name, args)
 
-        Precision1 = run_evaluation(args, shuffle_data=False, model=model)
+        Precision1, sentences_and_labels = run_evaluation(args, shuffle_data=False, model=model)
         print("P@1 : {}".format(Precision1), flush=True)
         all_Precision1.append(Precision1)
+        with open("./sents/{}.pkl".format(input_param["label"]+"_"+relation["relation"]), "wb") as f:
+            pickle.dump(sentences_and_labels, f)
 
         results_file.write(
             "{},{}\n".format(relation["relation"], round(Precision1 * 100, 2))
@@ -148,6 +150,7 @@ def run_experiments(
     mean_p1 = statistics.mean(all_Precision1)
     print("@@@ {} - mean P@1: {}".format(input_param["label"], mean_p1))
     results_file.close()
+
 
     for t, l in type_Precision1.items():
 

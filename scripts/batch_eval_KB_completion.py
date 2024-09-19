@@ -485,8 +485,12 @@ def main(args, shuffle_data=True, model=None):
         num_threads = multiprocessing.cpu_count()
     pool = ThreadPool(num_threads)
     list_of_results = []
-
+    sentences_and_labels = []
     for i in tqdm(range(len(samples_batches))):
+        assert len(samples_batches) == len(sentences_batches)
+
+        for sample, sentence in zip(samples_batches[i], sentences_batches[i]):
+            sentences_and_labels.append((sentence, sample["obj_label"]))
 
         samples_b = samples_batches[i]
         sentences_b = sentences_batches[i]
@@ -727,7 +731,7 @@ def main(args, shuffle_data=True, model=None):
     with open("{}/result.pkl".format(log_directory), "wb") as f:
         pickle.dump(all_results, f)
 
-    return Precision1
+    return Precision1, sentences_and_labels
 
 
 if __name__ == "__main__":
